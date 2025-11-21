@@ -12,6 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     echo json_encode(["error" => "Método no permitido. Usa POST."]);
     exit;
 }
+
+$input = json_decode(file_get_contents('php://input'), true);
+
+$username = $input['username'] ?? '';
+$password = $input['password'] ?? '';
     // Aquí deberías validar las credenciales contra una base de datos
     foreach ($usuarios as $usuario) {
         if ($usuario['username'] === $username && $usuario['password'] === $password) {
@@ -21,6 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         }
         exit;
     }
+
+    http_response_code(401);
+    echo json_encode(["error" => "Credenciales inválidas."]);
 ?>
     <!DOCTYPE html>
     <html lang="en">
