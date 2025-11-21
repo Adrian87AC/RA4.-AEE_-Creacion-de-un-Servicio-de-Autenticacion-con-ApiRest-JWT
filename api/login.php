@@ -1,15 +1,23 @@
 <?php
- session_start();
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $username = $_POST['username'];
-        $password = $_POST['password'];
-    
-        // Aquí deberías validar las credenciales contra una base de datos
-        if ($username === 'admin' && $password === 'password') {
+header("Content-Type: application/json");
+
+$usuarios =[
+    ["username" => "admin", "password" => "admin"],
+    ["username" => "adrian", "password" => "Adrian12@"],
+    ["username" => "usuario", "password" => "usuario"]
+];
+session_start();
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(["error" => "Método no permitido. Usa POST."]);
+    exit;
+}
+    // Aquí deberías validar las credenciales contra una base de datos
+    foreach ($usuarios as $usuario) {
+        if ($usuario['username'] === $username && $usuario['password'] === $password) {
             $_SESSION['user'] = $username;
-            echo "Inicio de sesión exitoso. Bienvenido, " . htmlspecialchars($username) . "!";
-        } else {
-            echo "Credenciales inválidas. Por favor, inténtalo de nuevo.";
+            echo json_encode(["message" => "Inicio de sesión exitoso. Bienvenido, " . htmlspecialchars($username) . "!"]);
+            exit;
         }
         exit;
     }
